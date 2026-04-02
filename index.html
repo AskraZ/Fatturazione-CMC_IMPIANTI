@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMC IMPIANTI - Gestionale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo"><div class="logo-dot"></div>CMC IMPIANTI</div>
+  <div class="topbar-right">
+    <span class="topbar-date">SALVATORE FURNARI</span>
+    <div class="avatar">SF</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="dashboard" id="dashboard">
+    
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Ultime fatture</span>
+        <button class="card-link" onclick="showPage('fatture')">Vedi tutte -></button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Cliente</th><th>Importo</th><th>Stato</th></tr>
+        </thead>
+        <tbody id="dash-invoices-body"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Contributi da pagare</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Descrizione</th><th>STATO</th><th>Importo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CONTRIBUTI ARMANDO</td>
+            <td><span class="badge badge-danger">DA DARE</span></td>
+            <td class="amount-neutral">10.000€</td>
+          </tr>
+          <tr>
+            <td>PAGAMENTO 02/04/26</td>
+            <td><span class="badge badge-success">PAGATI</span></td>
+            <td>700€</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="contrib-footer">
+        <span>Totale</span>
+        <span class="amount-neutral">9.300€</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-fatture">
+    <button class="back-btn" onclick="showDashboard()">← Torna alla dashboard</button>
+    <div class="page-title">Tutte le fatture</div>
+    
+    <div class="page-card">
+      <table id="main-invoices-table">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Importo</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>#1</td><td>Scappini Giorgio</td><td>7 Gen</td><td class="amount-pos">€ 610</td><td><span class="badge badge-success">Pagata</span></td></tr>
+          <tr><td>#2</td><td>Caponetto Filippo</td><td>16 Gen</td><td class="amount-pos">€ 3320</td><td><span class="badge badge-warn">In attesa</span></td></tr>
+          <tr><td>#3</td><td>Parco Delle Mimose</td><td>26 Gen</td><td class="amount-pos">€ 213,50</td><td><span class="badge badge-danger">Non Pagata</span></td></tr>
+          <tr><td>#4</td><td>Condominio Viale O. Pordenone</td><td>26 Feb</td><td class="amount-pos">€ 183</td><td><span class="badge badge-danger">Non Pagata</span></td></tr>
+          <tr><td>#5</td><td>Condominio Viale O. Pordenone</td><td>19 Mar</td><td class="amount-pos">€ 183</td><td><span class="badge badge-danger">Non Pagata</span></td></tr>
+          <tr><td>#6</td><td>Condominio Viale O. Pordenone</td><td>2 Apr</td><td class="amount-pos">€ 183</td><td><span class="badge badge-warn">Non Pagata</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Funzione per sincronizzare la Dashboard con la lista Fatture
+  function syncDashboard() {
+    const mainTableRows = document.querySelectorAll('#main-invoices-table tbody tr');
+    const dashBody = document.getElementById('dash-invoices-body');
+    if(!dashBody) return;
+    
+    dashBody.innerHTML = ''; // Pulisce la tabella della dashboard
+
+    // Prende le ultime 5 righe della tabella principale, le inverte e le copia
+    const lastFive = Array.from(mainTableRows).slice(-5).reverse();
+
+    lastFive.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      // Struttura: Cliente [1], Importo [3], Stato [4]
+      const newRow = `
+        <tr>
+          <td>${cells[1].innerText}</td>
+          <td class="amount-pos">${cells[3].innerText}</td>
+          <td>${cells[4].innerHTML}</td>
+        </tr>`;
+      dashBody.innerHTML += newRow;
+    });
+  }
+
+  // Gestione navigazione pagine
+  function showPage(id) {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('page-' + id).classList.add('active');
+  }
+
+  function showDashboard() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('dashboard').style.display = 'grid';
+    syncDashboard(); 
+  }
+
+  // Inizializzazione al caricamento della pagina
+  window.onload = syncDashboard;
+</script>
+
+</body>
+</html>
